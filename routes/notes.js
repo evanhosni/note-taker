@@ -1,5 +1,5 @@
 const notes = require('express').Router()
-const { readFromFile, readAndAppend } = require('../helpers/fsUtils');
+const { readFromFile, readAndAppend, writeToFile } = require('../helpers/fsUtils');
 const uuid = require('../helpers/uuid');
 
 const db = require('../db/db.json')
@@ -12,14 +12,14 @@ notes.get('/', (req, res) => {
 notes.get('/:id', (req, res) => {
     for (let i = 0; i < db.length; i++) {
         if (db[i].id == req.params.id) {
-           return res.json(db[i])
+            return res.json(db[i])
         }
     }
     res.status(404).send("no note found")
 })
 
 notes.post('/', (req, res) => {
-    const {title, text, id} = req.body;
+    const {title, text} = req.body;
 
     if (req.body) {
         const newNote = {
@@ -35,12 +35,12 @@ notes.post('/', (req, res) => {
     }
 })
 
-notes.delete('/', (req, res) => {
-    for (let i = 0; i < db.length; i++) {
-        if (db[i].id == req.params.id) {
-           return res.json(db[i])
-        }
-    }
+notes.delete('/:id', (req, res) => {
+    let id = req.params.id;
+    const filtered = db.filter(note => note.id !== id)
+    writeToFile('./db/db.json', filtered)
+    readFromFile('./db/db.json')
+    .then(data => res.json(JSON.parse(data)))
 })
 
 module.exports = notes;
