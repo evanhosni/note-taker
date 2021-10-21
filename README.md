@@ -3,7 +3,7 @@
 
 ## Description
 
-An app that allows users to take notes, save them, and delete them
+An app that allows users to take notes, save them, and delete them. Check it out [here](https://evanhosni-note-taker.herokuapp.com/)
 
 ---
 
